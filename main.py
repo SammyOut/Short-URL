@@ -5,19 +5,6 @@ short_url = {}
 index = 1
 
 
-def base62_encode() -> str:
-    base62 = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-    global index
-
-    temp = []
-    while index > 0:
-        temp.append(base62[index % 62])
-        index //= 62
-
-    index += 1
-    return ''.join(temp[::-1])
-
-
 @app.route('/', methods=['POST'])
 def make_short_url() -> Response:
     original_url = request.json['url']
