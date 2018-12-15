@@ -1,5 +1,5 @@
-from flask import request, redirect, Response, jsonify
-from .model import UrlModel
+from flask import request, redirect, Response, jsonify, current_app
+from server.model import UrlModel
 
 
 def save_url():
@@ -7,7 +7,12 @@ def save_url():
 
     url_key = UrlModel(original_url).save_url()
 
-    return jsonify({'url': 'http://localhost/' + url_key}), 201
+    if current_app.config['SERVER_NAME'] is not None:
+        base_url = current_app.config['SERVER_NAME'] + '/'
+    else:
+        base_url = 'localhost/'
+
+    return jsonify({'url': 'http://' + base_url + url_key}), 201
 
 
 def get_url(key) -> Response:
