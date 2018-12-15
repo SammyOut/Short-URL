@@ -2,8 +2,7 @@ from flask import Flask, request, redirect, Response
 
 from app import create_app
 from config import Config
-from model import save_url, get_url
-
+from model import UrlModel
 
 app: Flask = create_app(Config)
 
@@ -12,14 +11,14 @@ app: Flask = create_app(Config)
 def post() -> Response:
     original_url = request.json['url']
 
-    url_key = save_url(original_url)
+    url_key = UrlModel(original_url).save_url()
 
     return Response('http://localhost/' + url_key, 201)
 
 
 @app.route('/<key>', methods=['GET'])
 def get(key) -> Response:
-    url = get_url(key)
+    url = UrlModel.get_url(key)
 
     if url is None:
         return Response('', 204)

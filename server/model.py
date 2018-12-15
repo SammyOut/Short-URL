@@ -17,31 +17,28 @@ class UrlModel(db.Model):
     def __repr__(self):
         return f'<URL({self.id}, {self.url}>'
 
+    def is_exist_url(self) -> Union[str, None]:
+        url = db.session.query(UrlModel).filter_by(url=self.url).first()
+        if url:
+            return encrypt_base62(url.id)
+        return None
 
-def is_existed_url(url: str) -> Union[str, None]:
-    url = db.session.query(UrlModel).filter_by(url=url).first()
-    if url:
-        return encrypt_base62(url.id)
-    return None
+    def save_url(self) -> str:
+        exist_url_key = self.is_exist_url()
+        if exist_url_key:
+            return exist_url_key
 
+        db.session.add(self)
+        db.session.commit()
 
-def save_url(url: str) -> str:
-    exist_url_key = is_existed_url(url)
-    if exist_url_key:
-        return exist_url_key
+        return encrypt_base62(self.id)
 
-    url: UrlModel = UrlModel(url)
-    db.session.add(url)
-    db.session.commit()
+    @staticmethod
+    def get_url(key: str) -> Union[str, None]:
+        index = decrypt_base62(key)
 
-    return encrypt_base62(url.id)
+        url: UrlModel = db.session.query(UrlModel).filter_by(id=index).first()
 
-
-def get_url(key: str) -> Union[str, None]:
-    index = decrypt_base62(key)
-
-    url: UrlModel = db.session.query(UrlModel).filter_by(id=index).first()
-
-    if url:
-        return url.url
-    return None
+        if url:
+            return url.url
+        return None
