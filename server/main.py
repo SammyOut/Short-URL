@@ -1,7 +1,7 @@
 from flask import Flask
 
-from server.app import create_app, db
-from server.config import Config
+from app import create_app, db
+from config import Config
 
 app: Flask = create_app(Config)
 

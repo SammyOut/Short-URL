@@ -1,7 +1,7 @@
 from typing import Union
 
-from server.app import db
-from server.base62 import *
+from app import db
+from base62 import *
 
 
 class UrlModel(db.Model):

@@ -1,5 +1,5 @@
 from flask import request, redirect, Response, jsonify, current_app
-from server.model import UrlModel
+from model import UrlModel
 
 
 def save_url():
